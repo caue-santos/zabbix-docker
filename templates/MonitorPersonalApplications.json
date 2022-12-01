@@ -1,0 +1,82 @@
+{
+  "zabbix_export": {
+    "version": "6.0",
+    "date": "2022-11-30T02:17:10Z",
+    "groups": [
+      {
+        "uuid": "137f19e6e2dc4219b33553b812627bc2",
+        "name": "Virtual machines"
+      }
+    ],
+    "templates": [
+      {
+        "uuid": "05db0849da2e4952ba305639fc11cfce",
+        "template": "Monitor Personal Applications",
+        "name": "Monitor Personal Applications",
+        "description": "Template to monitor personal applications based on http protocol.",
+        "groups": [
+          {
+            "name": "Virtual machines"
+          }
+        ],
+        "discovery_rules": [
+          {
+            "uuid": "992eb36988bf4c19a47d4071e9b0eef5",
+            "name": "Discovery Sites",
+            "type": "EXTERNAL",
+            "key": "DiscoverySitesToMonitor.php",
+            "delay": "10m",
+            "lifetime": "3d",
+            "item_prototypes": [
+              {
+                "uuid": "b96f8310cf06466985d30397ab91ff1a",
+                "name": "Status: {#SITEURL}",
+                "type": "HTTP_AGENT",
+                "key": "http_test[{#SITEURL}]",
+                "delay": "{#INTERVALTOCHECK}",
+                "history": "3d",
+                "trends": "8d",
+                "description": "Item to check status of site {#SITEURL}.",
+                "preprocessing": [
+                  {
+                    "type": "REGEX",
+                    "parameters": ["(200|301)", "1"],
+                    "error_handler": "CUSTOM_VALUE",
+                    "error_handler_params": "1"
+                  }
+                ],
+                "timeout": "{#TIMEOUT}",
+                "url": "{#SITEURL}",
+                "retrieve_mode": "HEADERS",
+                "trigger_prototypes": [
+                  {
+                    "uuid": "a27b26f99cb446b7b9ac5f0b8f0f77e4",
+                    "expression": "last(/Monitor Personal Applications/http_test[{#SITEURL}])=0 and last(/Monitor Personal Applications/http_test[{#SITEURL}], #2)=0",
+                    "name": "Down: {#SITEURL}",
+                    "priority": "HIGH"
+                  }
+                ]
+              }
+            ],
+            "graph_prototypes": [
+              {
+                "uuid": "c93d0d0e48b0433998c54142516adc19",
+                "name": "Graph: {#SITEURL}",
+                "graph_items": [
+                  {
+                    "color": "199C0D",
+                    "calc_fnc": "ALL",
+                    "item": {
+                      "host": "Monitor Personal Applications",
+                      "key": "http_test[{#SITEURL}]"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
