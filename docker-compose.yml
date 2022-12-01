@@ -22,6 +22,7 @@ services:
 
   zabbix-server:
     user: root
+    build: .
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql:ubuntu-6.0.10
     networks:
